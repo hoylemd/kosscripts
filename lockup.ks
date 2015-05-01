@@ -1,0 +1,6 @@
+// throttle up
+LOCK THROTTLE TO 1.0.
+LOCK STEERING TO UP.
+WAIT 2.
+
+
