@@ -9,7 +9,12 @@ set initial_delta to alt - cnode:orbit:periapsis.
 until abs(initial_delta) < lambda {
     set delta to alt - cnode:orbit:periapsis.
 
-    // don't need to checkl for negative case
-    cnode:prograde to cnode:prograde + adjustment.
+    // don't need to check for negative case
+    set cnode:prograde to cnode:prograde + adjustment.
 
+    //check if we overshot
+    if cnode:orbit:apoapsis > alt {
+        set cnode:prograde to cnode:prograde - adjustment.
+        adjustment = adjustment / 2.
+    }
 }
