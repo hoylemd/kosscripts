@@ -1,20 +1,26 @@
 set alt to ship:apoapsis.
-set lambda to 5.
+set lambda to 500.
 
 set cnode to node(time:seconds + eta:apoapsis, 0,0,0).
 add cnode.
 
 set adjustment to 100.
-set initial_delta to alt - cnode:orbit:periapsis.
-until abs(initial_delta) < lambda {
-    set delta to alt - cnode:orbit:periapsis.
+set delta to alt - cnode:orbit:periapsis.
+print "Adjusting circularization node...".
+until delta < lambda {
 
     // don't need to check for negative case
     set cnode:prograde to cnode:prograde + adjustment.
 
     //check if we overshot
-    if cnode:orbit:apoapsis > alt {
+    if cnode:orbit:apoapsis - alt > lambda {
+        print cnode:orbit:apoapsis - alt.
         set cnode:prograde to cnode:prograde - adjustment.
-        adjustment = adjustment / 2.
+        // make the adjustments more fine.
+        set adjustment to adjustment / 2.
     }
+
+    set delta to alt - cnode:orbit:periapsis.
 }
+
+run executeNode.

@@ -12,7 +12,7 @@ WHEN SHIP:ALTITUDE > 500 THEN {
             WHEN SHIP:ALTITUDE > 10000 THEN {
                 LOCK STEERING TO HEADING(heading,45).
 
-                WHEN SHIP:ALTITUDE > 15000 THEN {
+                WHEN SHIP:ALTITUDE > 20000 THEN {
                     LOCK STEERING TO HEADING(heading,0).
 
                 }
