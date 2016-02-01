@@ -1,41 +1,31 @@
-lock steering to up.
-
-set inclination to 90.
+// Parameters
 set pitch_over_start_speed to 5.
-set pitch to 0.5.
-set max_hvel to 1.
-set return_hvel to 0.1.
-set chute_altitude to 1000.
+set pitch to 7.
+set max_hvel to 15.
+set chute_altitude to 600.
 
 // prepare to launch
 lock steering to up.
-wait 2.
-
-// launch
-print "Launching!".
 stage.
 
-// pitch-over
-wait until ship:airspeed > pitch_over_start_speed.
-print "GS: " + groundspeed + "m/s".
-print "AS: " + airspeed + "m/s".
-set target_pitch to 90 + pitch.
-print "Exec POM of " + target_pitch + "deg to " + max_hvel + "m/s GS.".
-lock steering to heading(inclination, target_pitch).
+// POM
+when ship:airspeed > pitch_over_start_speed then {
+    set target_pitch to 90 + pitch.
+    print "Exec POM of " + target_pitch + "deg to " + max_hvel + "m/s GS.".
+    lock steering to heading(90, target_pitch).
 
-wait until groundspeed > max_hvel.
-set target_pitch to 90 + pitch.
-print "Cancel POM with " + target_pitch + "deg to " + return_hvel + "m/s GS.".
-lock steering to heading(inclination, target_pitch).
+    when groundspeed > max_hvel then {
+        print "Normalizing pitch".
+        lock steering to up.
+    }
+}
 
-wait until groundspeed < return_hvel.
-print "Normalizing pitch".
-lock steering to up.
+when altitude > chute_altitude then {
+    when altitude < chute_altitude then {
+        print "Dep chutes at " + chute_altitude + "m".
+        unlock steering.
+        stage. // deploy chutes, hopefully
+    }
+}
 
-wait until verticalspeed < 0.
-print "GS: " + groundspeed + "m/s".
-
-wait until altitude < chute_altitude.
-print "Dep chutes at " + chute_altitude + "m".
-unlock steering.
-stage.
+wait until airspeed = 0.
